@@ -77,7 +77,7 @@ export default {
 
     async mint(metadata) {
       const mint = await this.momint.methods
-        .mint({ value: metadata.url })
+        .mint(metadata.url)
         .send({ from: ethereum.selectedAddress })
       console.log(mint)
     },
