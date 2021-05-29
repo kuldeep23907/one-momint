@@ -8,77 +8,85 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import momintABI from '~/contracts/ABI/ERC721.json'
+import { MOMINT_CONTRACT_ADDRESS } from '~/constants'
 
 export default {
   data() {
     return {
+      camera: null,
       picture: '',
     }
   },
+
   computed: {
-    // ownership() {
-    //   console.log('running', this.connectedAccountBalance, this.totalSupply)
-    //   return Number(this.connectedAccountBalance) / Number(this.totalSupply)
-    // },
+    ...mapState(['selectedAccount']),
   },
-  async mounted() {
-    console.log(this.$webcam)
+
+  mounted() {
     const webcamElement = document.getElementById('webcam')
     const canvasElement = document.getElementById('canvas')
     this.camera = new this.$webcam(webcamElement, 'user', canvasElement)
+
     this.camera
       .start()
-      .then((result) => {
+      .then(() => {
         console.log('webcam started')
       })
       .catch((err) => {
-        console.log(err)
+        console.error(err)
       })
 
     this.momint = new this.$web3.eth.Contract(
       momintABI,
-      '0xD9546d7b514a33EFF8785f97bF0B047326AA7d3d'
+      MOMINT_CONTRACT_ADDRESS
     )
     console.log(this.momint)
   },
+
+  destroyed() {
+    if (this.camera) {
+      this.camera.stop()
+    }
+  },
+
   methods: {
-    async snap() {
+    snap() {
       this.picture = this.camera.snap()
-      console.log(this.picture)
-      await fetch(this.picture)
+      fetch(this.picture)
         .then((res) => res.blob())
         .then(async (blob) => {
           const file = new this.$nftStorageFile([blob], 'nftdata.png', {
             type: 'image/png',
           })
-          const ipfsResult = await this.sendToNftStorage(file).then(
-            (result) => {
-              console.log(result)
-              return result
-            }
-          )
+          await this.sendToNftStorage(file)
         })
     },
+
     flip() {
       this.camera.flip()
       this.camera.start()
     },
-    async sendToNftStorage(img) {
-      console.log(this.$nftStorageClient)
+
+    async sendToNftStorage(image) {
       const metadata = await this.$nftStorageClient.store({
-        name: 'moMint NFT',
+        name: 'MoMint NFT',
         description: 'Capture the moment',
-        image: img,
+        image,
       })
       console.log(metadata)
-      this.mint(metadata)
+      await this.mint(metadata)
     },
 
     async mint(metadata) {
+      if (!this.selectedAccount) {
+        return alert('You must connect to MetaMask')
+      }
       const mint = await this.momint.methods
         .mint(metadata.url)
-        .send({ from: ethereum.selectedAddress })
+        .send({ from: this.selectedAccount })
       console.log(mint)
     },
   },
