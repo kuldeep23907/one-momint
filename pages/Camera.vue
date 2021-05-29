@@ -4,6 +4,7 @@
     <video id="webcam" autoplay playsinline width="640" height="480"></video>
     <canvas id="canvas" class="d-none"></canvas>
     <button @click="snap">Snap</button>
+    <button @click="flip">Flip</button>
   </div>
 </template>
 
@@ -44,6 +45,9 @@ export default {
           this.file = new File([blob], 'nftdata', { type: 'image/png' })
         })
       console.log(this.file)
+    },
+    flip() {
+      this.camera.flip()
     },
   },
 }

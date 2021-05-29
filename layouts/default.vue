@@ -47,6 +47,11 @@ export default {
           icon: 'home',
           to: { name: 'index' },
         },
+        {
+          title: 'Camera',
+          icon: 'camera',
+          to: { name: 'Camera' },
+        },
       ],
     }
   },
