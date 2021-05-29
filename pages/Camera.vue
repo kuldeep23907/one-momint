@@ -1,9 +1,19 @@
 <template>
-  <div class="column">
-    <video id="webcam" autoplay playsinline width="640" height="480"></video>
-    <canvas id="canvas" class="d-none"></canvas>
-    <button @click="snap">Snap</button>
-    <button @click="flip">Flip</button>
+  <div>
+    <video
+      v-show="!snapCaptured"
+      id="webcam"
+      ref="webcam"
+      autoplay
+      playsinline
+    ></video>
+    <canvas v-show="snapCaptured" id="canvas" ref="canvas"></canvas>
+    <div class="buttons">
+      <b-icon @click="snap" icon="camera" type="is-white" size="is-large">
+      </b-icon>
+      <b-icon @click="flip" icon="camera-flip" type="is-white" size="is-large">
+      </b-icon>
+    </div>
   </div>
 </template>
 
@@ -47,16 +57,18 @@ export default {
           pathname: { type: 'string' },
           protocol: { type: 'string' },
         },
-      }
+      },
+      snapCaptured: false,
     }
   },
-
+  layout: 'camera',
   computed: {
     ...mapState(['selectedAccount']),
   },
+
   async mounted() {
-    const webcamElement = document.getElementById('webcam')
-    const canvasElement = document.getElementById('canvas')
+    const webcamElement = this.$refs.webcam
+    const canvasElement = this.$refs.canvas
     this.camera = new this.$webcam(webcamElement, 'user', canvasElement)
 
     this.camera
@@ -208,6 +220,7 @@ export default {
     },
     snap() {
       this.picture = this.camera.snap()
+      this.snapCaptured = true
       fetch(this.picture)
         .then((res) => res.blob())
         .then(async (blob) => {
@@ -248,3 +261,36 @@ export default {
   },
 }
 </script>
+<style scoped>
+video {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0 auto;
+  position: fixed;
+  background: black;
+  border-radius: 5px;
+  -webkit-transform: scaleX(-1);
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  transform: scaleX(-1);
+  filter: fliph;
+  -ms-filter: 'fliph';
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  background: rgb(0, 0, 0);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.8029586834733894) 0%,
+    rgba(0, 0, 0, 0.8645833333333334) 35%,
+    rgba(26, 49, 113, 1) 100%
+  );
+  width: 100vw;
+  height: 10vh;
+}
+</style>
