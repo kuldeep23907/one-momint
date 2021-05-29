@@ -8,9 +8,11 @@
       playsinline
     ></video>
     <canvas v-show="snapCaptured" id="canvas" ref="canvas"></canvas>
-    <div class="buttons columns">
-      <b-button class="column auto" @click="snap">Snap</b-button>
-      <b-button class="column auto" @click="flip">Flip</b-button>
+    <div class="buttons">
+      <b-icon @click="snap" icon="camera" type="is-white" size="is-large">
+      </b-icon>
+      <b-icon @click="flip" icon="camera-flip" type="is-white" size="is-large">
+      </b-icon>
     </div>
   </div>
 </template>
@@ -119,6 +121,9 @@ video {
 }
 
 .buttons {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
   position: fixed;
   bottom: 0;
   background: rgb(0, 0, 0);
