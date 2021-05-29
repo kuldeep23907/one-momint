@@ -9,23 +9,52 @@
 
 <script>
 import { mapState } from 'vuex'
-
+import { Client, ThreadID, KeyInfo, PrivateKey, WithKeyInfoOptions } from '@textile/hub'
 import momintABI from '~/contracts/ABI/ERC721.json'
 import { MOMINT_CONTRACT_ADDRESS } from '~/constants'
+
 
 export default {
   data() {
     return {
       camera: null,
       picture: '',
+      identity: '',
+      client: '',
+      isLoading: true,
+      threadId: '',
+      ipfsGateway: 'https://hub.textile.io',
+      keyInfo: {
+        key: 'bu5rhmadvh755lceb4c7w66z5mi',
+      },
+      keyInfoOptions: {
+        debug: false,
+      },
+      allMintedPics: [],
+      // Define a simple person schema
+      schema: {
+        $schema: 'http://json-schema.org/draft-07/schema#',
+        title: 'UserMoments',
+        type: 'object',
+        properties: {
+          _id: { type: 'string' },
+          address: { type: 'string' },
+          URI: { type: 'string' },
+          description: { type: 'string' },
+          name: { type: 'string' },
+          href: { type: 'string' },
+          origin: { type: 'string' },
+          pathname: { type: 'string' },
+          protocol: { type: 'string' },
+        },
+      }
     }
   },
 
   computed: {
     ...mapState(['selectedAccount']),
   },
-
-  mounted() {
+  async mounted() {
     const webcamElement = document.getElementById('webcam')
     const canvasElement = document.getElementById('canvas')
     this.camera = new this.$webcam(webcamElement, 'user', canvasElement)
@@ -44,6 +73,19 @@ export default {
       MOMINT_CONTRACT_ADDRESS
     )
     console.log(this.momint)
+    console.log("here")
+    this.identity = await this.getIdentity()
+    this.client = await this.getClient()
+    await this.listThreads()
+
+    // await this.createThread()
+
+    // await this.createCollectionFromSchema()
+
+    await this.getAllData()
+    // await this.addNewData()
+
+    this.isLoading = false
   },
 
   destroyed() {
@@ -51,8 +93,119 @@ export default {
       this.camera.stop()
     }
   },
-
+  /**
+   * getIdentity uses a basic private key identity.
+   * The user's identity will be cached client side. This is long
+   * but ephemeral storage not sufficient for production apps.
+   * 
+   * Read more here:
+   * https://docs.textile.io/tutorials/hub/libp2p-identities/
+   */
   methods: {
+    getIdentity() {
+      try {
+        let storedIdent = localStorage.getItem("identity")
+        if (storedIdent === null) {
+          throw new Error('No identity')
+        }
+        const restored = PrivateKey.fromString(storedIdent)
+        return restored
+      }
+      catch (e) {
+        /**
+         * If any error, create a new identity.
+         */
+        try {
+          const identity = PrivateKey.fromRandom()
+          const identityString = identity.toString()
+          localStorage.setItem("identity", identityString)
+          return identity
+        } catch (err) {
+          return err.message
+        }
+      }
+    },
+
+    async getClient() {
+      if (!this.identity) {
+        throw new Error('Identity not set')
+      }
+      const client = await Client.withKeyInfo(this.keyInfo)
+      await client.getToken(this.identity)
+      return client
+    },
+
+    async listThreads() {
+      if (!this.identity) {
+        throw new Error('Identity not set')
+      }
+      const threads = await this.client.listThreads() || []
+      console.log(threads)
+      const lastThread = threads[threads.length -1 ? threads.length - 1 : 0];
+      console.log(lastThread)
+      this.threadId = lastThread.id
+      console.log(this.threadId)
+      // this.threadId = threads.id
+    },
+
+
+    async createThread() {
+      if(!this.client) {
+        throw new Error('Client not set')
+      }
+      const thread = await this.client.newDB()
+      this.threadId = thread.toString()
+      console.log(this.threadId)
+    },
+
+    async createCollectionFromSchema() {
+      if(!this.client) {
+        throw new Error('Client not set')
+      }
+      if(!this.threadId) {
+        throw new Error('No DB yet')
+      }
+       console.log(this.threadId)
+      await this.client.newCollection(ThreadID.fromString(this.threadId), {name: 'UserMoments1', schema: this.schema})
+    },
+
+
+    async getAllData() {
+      if(!this.client) {
+        throw new Error('Client not set')
+      }
+      if(!this.threadId) {
+        throw new Error('No DB yet')
+      }
+       console.log(this.threadId)
+      const found = await this.client.find(ThreadID.fromString(this.threadId), 'UserMoments1', {})
+      console.log('found:', found)
+      this.allMintedPics = found
+    },
+ 
+    async addNewData(metadata) {
+      if(!this.client) {
+        throw new Error('Client not set')
+      }
+      if(!this.threadId) {
+        throw new Error('No DB yet')
+      }
+       console.log(this.threadId)
+      const fruits = ['Apple', 'Orange', 'Banana'];
+      const created = await this.client.create(ThreadID.fromString(this.threadId), 'UserMoments1', 
+      [{
+        _id: ""+Date.now(),
+        address: this.selectedAccount,
+        URI: metadata.url,
+        description: metadata.data.description,
+        name: metadata.data.name,
+        href: metadata.data.image.href,
+        origin: metadata.data.image.origin,
+        pathname: metadata.data.image.pathname,
+        protocol: metadata.data.image.protocol,
+      }])
+      console.log(created);
+    },
     snap() {
       this.picture = this.camera.snap()
       fetch(this.picture)
@@ -75,9 +228,12 @@ export default {
         name: 'MoMint NFT',
         description: 'Capture the moment',
         image,
-      })
-      console.log(metadata)
+      });
+      console.log(metadata);
+      console.log(metadata.data)
+      await this.addNewData(metadata)
       await this.mint(metadata)
+      await this.getAllData()
     },
 
     async mint(metadata) {
@@ -86,7 +242,7 @@ export default {
       }
       const mint = await this.momint.methods
         .mint(metadata.url)
-        .send({ from: this.selectedAccount })
+        .send({ from: this.selectedAccount });
       console.log(mint)
     },
   },
