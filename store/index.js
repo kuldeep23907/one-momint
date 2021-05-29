@@ -1,10 +1,10 @@
-export const state = {
+export const state = () => ({
   isConnectDisabled: false,
   selectedAccount: null,
   chainId: null,
-}
+})
 
-export const mutation = {
+export const mutations = {
   setChainId(state, id) {
     state.chainId = id
   },
