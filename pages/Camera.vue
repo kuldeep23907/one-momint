@@ -1,9 +1,16 @@
 <template>
-  <div class="column">
-    <video id="webcam" autoplay playsinline width="640" height="480"></video>
-    <canvas id="canvas" class="d-none"></canvas>
-    <button @click="snap">Snap</button>
-    <button @click="flip">Flip</button>
+  <div>
+    <video
+      v-show="!snapCaptured"
+      id="webcam"
+      ref="webcam"
+      autoplay
+      playsinline
+    ></video>
+    <canvas v-show="snapCaptured" id="canvas" ref="canvas"></canvas>
+
+    <b-button @click="snap">Snap</b-button>
+    <b-button @click="flip">Flip</b-button>
   </div>
 </template>
 
@@ -18,16 +25,17 @@ export default {
     return {
       camera: null,
       picture: '',
+      snapCaptured: false,
     }
   },
-
+  layout: 'camera',
   computed: {
     ...mapState(['selectedAccount']),
   },
 
   mounted() {
-    const webcamElement = document.getElementById('webcam')
-    const canvasElement = document.getElementById('canvas')
+    const webcamElement = this.$refs.webcam
+    const canvasElement = this.$refs.canvas
     this.camera = new this.$webcam(webcamElement, 'user', canvasElement)
 
     this.camera
@@ -55,6 +63,7 @@ export default {
   methods: {
     snap() {
       this.picture = this.camera.snap()
+      this.snapCaptured = true
       fetch(this.picture)
         .then((res) => res.blob())
         .then(async (blob) => {
@@ -92,3 +101,20 @@ export default {
   },
 }
 </script>
+<style scoped>
+video {
+  width: 100%;
+  opacity: 0.65;
+  min-height: 100vh;
+  margin: 0 auto;
+  position: fixed;
+  background: transparent;
+  border-radius: 5px;
+  -webkit-transform: scaleX(-1);
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  transform: scaleX(-1);
+  filter: fliph;
+  -ms-filter: 'fliph';
+}
+</style>
