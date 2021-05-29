@@ -2,9 +2,11 @@
   <section class="section">
     <div class="columns is-mobile">
       <card title="Free" icon="ethereum" class="">
-        <b-button :disabled="isConnectDisabled" @click="connectToWallet">{{
-          selectedAccount ? 'Connected' : 'Connect'
-        }}</b-button>
+        <b-button
+          :disabled="isConnectDisabled"
+          @click="$store.dispatch('connectToWallet')"
+          >{{ selectedAccount ? 'Connected' : 'Connect' }}</b-button
+        >
       </card>
     </div>
   </section>
@@ -12,6 +14,7 @@
 
 <script>
 // import Web3 from 'web3'
+import { mapState } from 'vuex'
 import Card from '~/components/Card'
 
 export default {
@@ -21,12 +24,8 @@ export default {
     Card,
   },
 
-  data() {
-    return {
-      isConnectDisabled: false,
-      selectedAccount: null,
-      chainId: null,
-    }
+  computed: {
+    ...mapState(['isConnectDisabled', 'selectedAccount', 'chainId']),
   },
 
   async mounted() {
@@ -58,7 +57,6 @@ export default {
 
       ethereum.on('chainChanged', (chainId) => {
         console.log('CHAIN_CHANGED: ', chainId)
-
         this.$router.go()
       })
 
@@ -66,43 +64,44 @@ export default {
         if (error) {
           console.error(error)
         }
-        this.chainId = null
-        this.selectedAccount = null
-        this.isConnectDisabled = false
+        this.$store.commit('setChainId', null)
+        this.$store.commit('setSelectedAccount', null)
+        this.$store.commit('disableConnectButton', false)
       })
     } else {
       alert('MetaMask not found')
     }
   },
 
+  destroyed() {
+    if (window.ethereum) {
+      window.ethereum.removeAllListeners()
+    }
+  },
+
   methods: {
-    async connectToWallet() {
-      const { ethereum } = window
-
-      if (!ethereum) {
-        return alert('MetaMask was not found to be installed.')
-      }
-
-      if (ethereum.selectedAddress) {
-        return alert("You're already connected to your wallet")
-      }
-
-      try {
-        this.isConnectDisabled = true
-
-        const accounts = await ethereum.request({
-          method: 'eth_requestAccounts',
-        })
-
-        if (accounts && accounts.length) {
-          this.selectedAccount = accounts[0]
-          this.isConnectDisabled = !accounts
-        }
-      } catch (error) {
-      } finally {
-        this.isConnectDisabled = false
-      }
-    },
+    // async connectToWallet() {
+    //   const { ethereum } = window
+    //   if (!ethereum) {
+    //     return alert('MetaMask was not found to be installed.')
+    //   }
+    //   if (ethereum.selectedAddress) {
+    //     return alert("You're already connected to your wallet")
+    //   }
+    //   try {
+    //     this.isConnectDisabled = true
+    //     const accounts = await ethereum.request({
+    //       method: 'eth_requestAccounts',
+    //     })
+    //     if (accounts && accounts.length) {
+    //       this.selectedAccount = accounts[0]
+    //       this.isConnectDisabled = !accounts
+    //     }
+    //   } catch (error) {
+    //   } finally {
+    //     this.isConnectDisabled = false
+    //   }
+    // },
   },
 }
 </script>
