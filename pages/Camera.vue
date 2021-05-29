@@ -24,7 +24,7 @@
       >
       </b-icon>
     </div>
-    <b-modal :can-cancel="['x']" class="modal" v-model="isModal">
+    <b-modal :can-cancel="['x']" class="modal" ref="modal" v-model="isModal">
       <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
       <h1
         class="title is-size-1 has-text-centered has-text-weight-bold has-text-white"
@@ -340,6 +340,11 @@ export default {
           await this.$nextTick()
 
           this.step = 3
+        })
+        .catch((error) => {
+          this.$refs.modal.close()
+          this.modalText = 'Sending your image on a Interplanetary Mission'
+          this.step = 1
         })
       console.log(mint)
     },
