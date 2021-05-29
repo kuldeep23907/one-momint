@@ -1,4 +1,4 @@
-# insta-nft
+# One Momint
 
 ## Build Setup
 
