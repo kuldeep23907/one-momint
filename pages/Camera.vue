@@ -9,8 +9,8 @@
     ></video>
     <canvas v-show="snapCaptured" id="canvas" ref="canvas"></canvas>
     <div class="buttons columns">
-      <b-button @click="snap">Snap</b-button>
-      <b-button @click="flip">Flip</b-button>
+      <b-button class="column auto" @click="snap">Snap</b-button>
+      <b-button class="column auto" @click="flip">Flip</b-button>
     </div>
   </div>
 </template>
