@@ -27,6 +27,8 @@ export default {
     { src: '~/plugins/web3', mode: 'client' },
     { src: '~/plugins/nft-storage-client', mode: 'client' },
     { src: '~/plugins/nft-storage-file', mode: 'client' },
+        { src: '~/plugins/camera.js', mode: 'client' },
+
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
