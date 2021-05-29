@@ -1,12 +1,6 @@
 <template>
   <div>
-    <video
-      v-show="!snapCaptured"
-      id="webcam"
-      ref="webcam"
-      autoplay
-      playsinline
-    ></video>
+    <video v-show="!snapCaptured" id="webcam" ref="webcam" autoplay></video>
     <canvas v-show="snapCaptured" id="canvas" ref="canvas"></canvas>
 
     <b-button @click="snap">Snap</b-button>
