@@ -28,6 +28,8 @@ export default {
     { src: '~/plugins/nft-storage-client', mode: 'client' },
     { src: '~/plugins/nft-storage-file', mode: 'client' },
     { src: '~/plugins/camera.js', mode: 'client' },
+    { src: '~/plugins/vue-particles.js', mode: 'client' },
+    { src: '~/plugins/typeit.js', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

@@ -18,6 +18,8 @@
     "nft.storage": "^1.4.0",
     "nuxt": "^2.15.3",
     "nuxt-buefy": "^0.4.4",
+    "typeit": "^7.0.4",
+    "vue-particles": "^1.0.9",
     "web3": "^1.3.6",
     "webcam-easy": "^1.0.5"
   },
