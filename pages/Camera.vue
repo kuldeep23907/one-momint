@@ -48,6 +48,7 @@ export default {
     },
     flip() {
       this.camera.flip()
+      this.camera.start()
     },
   },
 }
