@@ -318,4 +318,7 @@ video {
   width: 100vw;
   height: 10vh;
 }
+
+canvas {
+}
 </style>
