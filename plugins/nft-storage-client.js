@@ -1,6 +1,6 @@
 import { NFTStorage } from 'nft.storage'
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 export default function (context, inject) {
   inject(
     'nftStorageClient',

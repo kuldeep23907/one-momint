@@ -1,10 +1,14 @@
+import { ActionTree, MutationTree } from 'vuex'
+
 export const state = () => ({
   isConnectDisabled: false,
   selectedAccount: null,
   chainId: null,
 })
 
-export const mutations = {
+export type RootState = ReturnType<typeof state>
+
+export const mutations: MutationTree<RootState> = {
   setChainId(state, id) {
     state.chainId = id
   },
@@ -16,7 +20,7 @@ export const mutations = {
   },
 }
 
-export const actions = {
+export const actions: ActionTree<RootState, RootState> = {
   async connectToWallet({ commit }) {
     const { ethereum } = window
 
@@ -36,7 +40,7 @@ export const actions = {
       })
 
       if (accounts && accounts.length) {
-        commit('setSelectedAccount', account[0])
+        commit('setSelectedAccount', accounts[0])
         commit('disableConnectButton', true)
       }
     } catch (error) {
