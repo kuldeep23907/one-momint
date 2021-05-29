@@ -24,6 +24,45 @@
       >
       </b-icon>
     </div>
+    <b-modal :can-cancel="['x']" class="modal" v-model="isModal">
+      <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+      <h1
+        class="title is-size-1 has-text-centered has-text-weight-bold has-text-white"
+      >
+        {{ this.modalText }}
+      </h1>
+
+      <lottie-player
+        v-show="step == 1"
+        src="https://assets5.lottiefiles.com/packages/lf20_llkmhppf.json"
+        background="transparent"
+        speed="1"
+        class="lottie-player"
+        style="width: 300px; height: 300px;"
+        loop
+        autoplay
+      ></lottie-player>
+      <lottie-player
+        src="https://assets3.lottiefiles.com/temp/lf20_iRxzMr.json"
+        background="transparent"
+        speed="1"
+        v-show="step == 2"
+        class="lottie-player"
+        style="width: 300px; height: 300px;"
+        loop
+        autoplay
+      ></lottie-player>
+      <lottie-player
+        v-show="step == 3"
+        src="https://assets4.lottiefiles.com/private_files/lf30_ln2embei.json"
+        background="transparent"
+        speed="1"
+        class="lottie-player"
+        style="width: 300px; height: 300px;"
+        loop
+        autoplay
+      ></lottie-player>
+    </b-modal>
   </div>
 </template>
 
@@ -43,7 +82,9 @@ export default {
   data() {
     return {
       camera: null,
+      modalText: 'Sending your image on a Interplanetary Mission',
       picture: '',
+      step: 1,
       identity: '',
       client: '',
       isLoading: true,
@@ -74,6 +115,7 @@ export default {
         },
       },
       snapCaptured: false,
+      isModal: false,
     }
   },
   layout: 'camera',
@@ -246,6 +288,8 @@ export default {
     snap() {
       this.picture = this.camera.snap()
       this.snapCaptured = true
+      this.isModal = true
+
       fetch(this.picture)
         .then((res) => res.blob())
         .then(async (blob) => {
@@ -280,7 +324,23 @@ export default {
       }
       const mint = await this.momint.methods
         .mint(metadata.url)
-        .send({ from: this.selectedAccount })
+        .send({ from: this.selectedAccount }, async (error, result) => {
+          if (!error) {
+            console.log(result)
+            this.modalText = 'Minting your MoMint...'
+            await this.$nextTick()
+            this.step = 2
+          } else {
+            this.snapCaptured = false
+          }
+        })
+        .then(async (result) => {
+          console.log(result)
+          this.modalText = 'Success!'
+          await this.$nextTick()
+
+          this.step = 3
+        })
       console.log(mint)
     },
   },
@@ -317,5 +377,8 @@ video {
   );
   width: 100vw;
   height: 10vh;
+}
+.lottie-player {
+  margin: 0 auto;
 }
 </style>
