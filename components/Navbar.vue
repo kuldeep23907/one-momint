@@ -4,7 +4,9 @@
       <b-navbar-item
         tag="router-link"
         :to="{ path: '/' }"
-        :style="{ 'background-color': 'white' }"
+        :style="{
+          'background-color': 'white',
+        }"
       >
         <img :src="require('~/assets/brand-logo.png')" />
       </b-navbar-item>
