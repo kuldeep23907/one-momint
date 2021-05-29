@@ -101,15 +101,15 @@ export default {
     )
     console.log(this.momint)
     console.log('here')
-    this.identity = await this.getIdentity()
-    this.client = await this.getClient()
-    await this.listThreads()
+    // this.identity = await this.getIdentity()
+    // this.client = await this.getClient()
+    // await this.listThreads()
 
     // await this.createThread()
 
     // await this.createCollectionFromSchema()
 
-    await this.getAllData()
+    // await this.getAllData()
     // await this.addNewData()
 
     this.isLoading = false
@@ -269,8 +269,8 @@ export default {
       })
       console.log(metadata)
       console.log(metadata.data)
-      await this.addNewData(metadata)
-      await this.getAllData()
+      // await this.addNewData(metadata)
+      // await this.getAllData()
       await this.mint(metadata)
     },
 
@@ -317,5 +317,8 @@ video {
   );
   width: 100vw;
   height: 10vh;
+}
+
+canvas {
 }
 </style>
