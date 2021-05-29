@@ -1,10 +1,17 @@
 <template>
   <div>
-    <video v-show="!snapCaptured" id="webcam" ref="webcam" autoplay></video>
+    <video
+      v-show="!snapCaptured"
+      id="webcam"
+      ref="webcam"
+      autoplay
+      playsinline
+    ></video>
     <canvas v-show="snapCaptured" id="canvas" ref="canvas"></canvas>
-
-    <b-button @click="snap">Snap</b-button>
-    <b-button @click="flip">Flip</b-button>
+    <div class="buttons columns">
+      <b-button @click="snap">Snap</b-button>
+      <b-button @click="flip">Flip</b-button>
+    </div>
   </div>
 </template>
 
@@ -98,11 +105,10 @@ export default {
 <style scoped>
 video {
   width: 100%;
-  opacity: 0.65;
   min-height: 100vh;
   margin: 0 auto;
   position: fixed;
-  background: transparent;
+  background: black;
   border-radius: 5px;
   -webkit-transform: scaleX(-1);
   -moz-transform: scaleX(-1);
@@ -110,5 +116,19 @@ video {
   transform: scaleX(-1);
   filter: fliph;
   -ms-filter: 'fliph';
+}
+
+.buttons {
+  position: fixed;
+  bottom: 0;
+  background: rgb(0, 0, 0);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.8029586834733894) 0%,
+    rgba(0, 0, 0, 0.8645833333333334) 35%,
+    rgba(26, 49, 113, 1) 100%
+  );
+  width: 100vw;
+  height: 10vh;
 }
 </style>
