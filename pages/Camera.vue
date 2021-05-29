@@ -1,6 +1,5 @@
 <template>
   <div class="column">
-    <connect />
     <video id="webcam" autoplay playsinline width="640" height="480"></video>
     <canvas id="canvas" class="d-none"></canvas>
     <button @click="snap">Snap</button>
@@ -9,6 +8,8 @@
 </template>
 
 <script>
+import momintABI from '~/contracts/ABI/ERC721.json'
+
 export default {
   data() {
     return {
@@ -34,6 +35,12 @@ export default {
       .catch((err) => {
         console.log(err)
       })
+
+    this.momint = new this.$web3.eth.Contract(
+      momintABI,
+      '0xD9546d7b514a33EFF8785f97bF0B047326AA7d3d'
+    )
+    console.log(this.momint)
   },
   methods: {
     async snap() {
@@ -41,13 +48,38 @@ export default {
       console.log(this.picture)
       await fetch(this.picture)
         .then((res) => res.blob())
-        .then((blob) => {
-          this.file = new File([blob], 'nftdata', { type: 'image/png' })
+        .then(async (blob) => {
+          const file = new this.$nftStorageFile([blob], 'nftdata.png', {
+            type: 'image/png',
+          })
+          const ipfsResult = await this.sendToNftStorage(file).then(
+            (result) => {
+              console.log(result)
+              return result
+            }
+          )
         })
-      console.log(this.file)
     },
     flip() {
       this.camera.flip()
+      this.camera.start()
+    },
+    async sendToNftStorage(img) {
+      console.log(this.$nftStorageClient)
+      const metadata = await this.$nftStorageClient.store({
+        name: 'moMint NFT',
+        description: 'Capture the moment',
+        image: img,
+      })
+      console.log(metadata)
+      this.mint(metadata)
+    },
+
+    async mint(metadata) {
+      const mint = await this.momint.methods
+        .mint({ value: metadata.url })
+        .send({ from: ethereum.selectedAddress })
+      console.log(mint)
     },
   },
 }
