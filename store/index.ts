@@ -79,7 +79,7 @@ export const actions: ActionTree<RootState, RootState> = {
 
     console.log(address)
 
-    const ens = new ENS({
+    const ens = await new ENS({
       provider: await detectEthereumProvider(),
       ensAddress: getEnsAddress(4),
     })
