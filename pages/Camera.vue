@@ -424,7 +424,7 @@ canvas {
 }
 
 .txIcon {
-  height: 50px;
+  height: 100px;
   margin: 10px;
 }
 </style>
