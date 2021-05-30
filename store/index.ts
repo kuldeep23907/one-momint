@@ -72,10 +72,7 @@ export const mutations: MutationTree<RootState> = {
 
 export const actions: ActionTree<RootState, RootState> = {
   async reverseResolveAddress({ commit }, address) {
-    if (!address) return commit('setSelectedAccount', null)
-    if (window.ethereum.networkVersion !== String(4)) {
-      return commit('setSelectedAccountEnsName', null)
-    }
+    if (!address) return
 
     console.log(address)
 
