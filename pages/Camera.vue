@@ -9,6 +9,16 @@
     ></video>
     <canvas v-show="snapCaptured" id="canvas" ref="canvas"></canvas>
     <div class="buttons">
+      <NuxtLink to="/">
+        <b-icon
+          @click.native="$route.push('/')"
+          icon="backspace"
+          type="is-white"
+          size="is-large"
+        >
+        </b-icon>
+      </NuxtLink>
+
       <b-icon
         @click.native="snap"
         icon="camera"
@@ -387,13 +397,13 @@ export default {
 }
 </script>
 <style scoped>
-video {
+video,
+canvas {
   width: 100%;
   min-height: 100vh;
   margin: 0 auto;
   position: fixed;
   background: black;
-  border-radius: 5px;
   -webkit-transform: scaleX(-1);
   -moz-transform: scaleX(-1);
   -o-transform: scaleX(-1);
@@ -408,13 +418,7 @@ video {
   align-items: center;
   position: fixed;
   bottom: 0;
-  background: rgb(0, 0, 0);
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.8029586834733894) 0%,
-    rgba(0, 0, 0, 0.8645833333333334) 35%,
-    rgba(26, 49, 113, 1) 100%
-  );
+  background-color: transparent;
   width: 100vw;
   height: 10vh;
 }
