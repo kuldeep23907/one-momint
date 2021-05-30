@@ -1,6 +1,7 @@
-import { GetterTree, ActionTree, MutationTree } from 'vuex'
+import { ActionTree, MutationTree } from 'vuex'
 import ENS, { getEnsAddress } from '@ensdomains/ensjs'
 import detectEthereumProvider from '@metamask/detect-provider'
+import { SnackbarProgrammatic as Snackbar } from 'buefy'
 
 export const state = () => ({
   isConnectDisabled: false,
@@ -9,11 +10,19 @@ export const state = () => ({
   chainId: null,
 })
 
+export const getDefaultState = () => ({
+  isConnectDisabled: false,
+  selectedAccount: null,
+  selectedAccountEnsName: null,
+  chainId: null,
+})
+
 export type RootState = ReturnType<typeof state>
 
-export const getters: GetterTree<RootState, RootState> = {}
-
 export const mutations: MutationTree<RootState> = {
+  resetState(state) {
+    Object.assign(state, getDefaultState())
+  },
   setChainId(state, id) {
     state.chainId = id
   },
@@ -30,11 +39,16 @@ export const mutations: MutationTree<RootState> = {
 
 export const actions: ActionTree<RootState, RootState> = {
   async reverseResolveAddress({ commit }, address) {
-    if (!address) return null
+    if (!address) return commit('setSelectedAccount', null)
+    if (window.ethereum.networkVersion !== String(4)) {
+      return commit('setSelectedAccountEnsName', null)
+    }
+
+    console.log(address)
 
     const ens = new ENS({
       provider: await detectEthereumProvider(),
-      ensAddress: getEnsAddress('4'),
+      ensAddress: getEnsAddress(4),
     })
 
     const ensName = await ens.getName(address)
@@ -52,8 +66,23 @@ export const actions: ActionTree<RootState, RootState> = {
       return alert('MetaMask was not found to be installed.')
     }
 
+    if (ethereum.networkVersion !== String(4)) {
+      return Snackbar.open({
+        message: 'Please connect to Rinkeby',
+        type: 'is-warning',
+        position: 'is-top',
+      })
+    }
+
     if (ethereum.selectedAddress) {
-      return alert("You're already connected to your wallet")
+      return Snackbar.open({
+        actionText: 'OK',
+        message: `Connected as: \n\n ${ethereum.selectedAddress}`,
+        type: 'is-success',
+        position: 'is-top',
+        duration: 6000,
+        queue: false,
+      })
     }
 
     commit('disableConnectButton', true)

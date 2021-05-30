@@ -36,6 +36,14 @@ export default {
     ...mapState(['isConnectDisabled', 'selectedAccount', 'chainId']),
   },
 
+  watch: {
+    async selectedAccount(newAccount, oldAccount) {
+      if (newAccount !== oldAccount) {
+        await this.$store.dispatch('reverseResolveAddress', newAccount)
+      }
+    },
+  },
+
   async mounted() {
     const { ethereum } = window
 
@@ -47,7 +55,6 @@ export default {
 
         if (accounts && accounts.length) {
           this.setSelectedAccount(accounts[0])
-          await this.$store.dispatch('reverseResolveAddress', accounts[0])
         }
       }
 
@@ -65,6 +72,7 @@ export default {
 
       ethereum.on('chainChanged', (chainId) => {
         console.log('CHAIN_CHANGED: ', chainId)
+        this.resetState()
         this.$router.go()
       })
 
@@ -72,9 +80,7 @@ export default {
         if (error) {
           console.error(error)
         }
-        this.setChainId(null)
-        this.setSelectedAccount(null)
-        this.disableConnectButton(false)
+        this.resetState()
       })
     } else {
       alert('MetaMask not found')
@@ -85,7 +91,9 @@ export default {
     ...mapMutations([
       'setChainId',
       'setSelectedAccount',
+      'setSelectedAccountEnsName',
       'disableConnectButton',
+      'resetState',
     ]),
   },
 }
