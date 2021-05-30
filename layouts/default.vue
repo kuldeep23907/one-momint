@@ -72,6 +72,7 @@ export default {
 
       ethereum.on('chainChanged', (chainId) => {
         console.log('CHAIN_CHANGED: ', chainId)
+        this.resetState()
         this.$router.go()
       })
 
@@ -79,10 +80,7 @@ export default {
         if (error) {
           console.error(error)
         }
-        this.setChainId(null)
-        this.setSelectedAccount(null)
-        this.setSelectedAccountEnsName(null)
-        this.disableConnectButton(false)
+        this.resetState()
       })
     } else {
       alert('MetaMask not found')
@@ -95,6 +93,7 @@ export default {
       'setSelectedAccount',
       'setSelectedAccountEnsName',
       'disableConnectButton',
+      'resetState',
     ]),
   },
 }
