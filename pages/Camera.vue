@@ -24,7 +24,13 @@
       >
       </b-icon>
     </div>
-    <b-modal :can-cancel="['x']" class="modal" ref="modal" v-model="isModal">
+    <b-modal
+      :on-cancel="modalClosedEvent"
+      :can-cancel="['x']"
+      class="modal"
+      ref="modal"
+      v-model="isModal"
+    >
       <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
       <h1
         class="title is-size-1 has-text-centered has-text-weight-bold has-text-white"
@@ -62,6 +68,22 @@
         loop
         autoplay
       ></lottie-player>
+      <div v-show="step == 3" class="txLinks">
+        <a :href="this.openSeaLink">
+          <img
+            class="txIcon"
+            src="https://opensea.io/static/images/logos/opensea-logo.png"
+            alt=""
+        /></a>
+
+        <a :href="this.etherscanLink">
+          <img
+            class="txIcon"
+            src="https://etherscan.io/images/brandassets/etherscan-logo-circle.png"
+            alt=""
+          />
+        </a>
+      </div>
     </b-modal>
   </div>
 </template>
@@ -84,6 +106,8 @@ export default {
       camera: null,
       modalText: 'Sending your image on a Interplanetary Mission',
       picture: '',
+      openSeaLink: '',
+      etherscanLink: '',
       step: 1,
       identity: '',
       client: '',
@@ -337,16 +361,27 @@ export default {
         .then(async (result) => {
           console.log(result)
           this.modalText = 'Success!'
+          this.openSeaLink =
+            'https://testnets.opensea.io/assets/0xD9546d7b514a33EFF8785f97bF0B047326AA7d3d/' +
+            result.events.Transfer.returnValues.tokenId
+          this.etherscanLink =
+            'https://rinkeby.etherscan.io/tx/' + result.transactionHash
           await this.$nextTick()
 
           this.step = 3
         })
         .catch((error) => {
+          console.log(error)
           this.$refs.modal.close()
-          this.modalText = 'Sending your image on a Interplanetary Mission'
-          this.step = 1
         })
       console.log(mint)
+    },
+    modalClosedEvent() {
+      console.log('modal closed')
+      this.modalText = 'Sending your image on an Interplanetary Mission'
+      this.step = 1
+      this.camera.start()
+      this.snapCaptured = false
     },
   },
 }
@@ -385,5 +420,14 @@ video {
 }
 .lottie-player {
   margin: 0 auto;
+}
+.txLinks {
+  display: flex;
+  justify-content: center;
+}
+
+.txIcon {
+  height: 50px;
+  margin: 10px;
 }
 </style>
