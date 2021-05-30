@@ -42,27 +42,21 @@ export const mutations: MutationTree<RootState> = {
   },
   resetState(state) {
     Object.assign(state, getDefaultState())
-    syncStateToStorage(state)
   },
   setChainId(state, id) {
     state.chainId = id
-    syncStateToStorage(state)
   },
   disableConnectButton(state, bStatus) {
     state.isConnectDisabled = bStatus
-    syncStateToStorage(state)
   },
   setSelectedAccount(state, selectedAccount) {
     state.selectedAccount = selectedAccount
-    syncStateToStorage(state)
   },
   setSelectedAccountEnsName(state, ensName) {
     state.selectedAccountEnsName = ensName
-    syncStateToStorage(state)
   },
   setNFTCollection(state, collection) {
     state.nftCollection = collection
-    syncStateToStorage(state)
   },
   pushToNFTCollection(
     state: { selectedAccount: string | null; nftCollection: any[] },
@@ -73,7 +67,6 @@ export const mutations: MutationTree<RootState> = {
   },
   removeFromNFTCollectionByIndex(state, index) {
     state.nftCollection.splice(index, 1)
-    syncStateToStorage(state)
   },
 }
 

@@ -409,10 +409,10 @@ canvas {
   margin: 0 auto;
   position: fixed;
   background: black;
-  -webkit-transform: scaleX(-1) rotateY(180deg);
-  -moz-transform: scaleX(-1) rotateY(180deg);
-  -o-transform: scaleX(-1) rotateY(180deg);
-  transform: scaleX(-1) rotateY(180deg);
+  -webkit-transform: scaleX(-1);
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  transform: scaleX(-1);
 }
 
 .buttons {

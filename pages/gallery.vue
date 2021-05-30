@@ -37,10 +37,8 @@ export default {
   },
   computed: { ...mapState(['nftCollection', 'selectedAccount']) },
   watch: {
-    selectedAccount(newAcc, oldAcc) {
-      if (newAcc !== oldAcc) {
-        this.$store.commit('recoverStateFromStorage', newAcc)
-      }
+    selectedAccount(newAcc) {
+      this.$store.commit('recoverStateFromStorage', newAcc)
     },
     nftCollection(newCollection) {
       this.images = newCollection
