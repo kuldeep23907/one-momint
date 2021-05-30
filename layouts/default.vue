@@ -36,6 +36,14 @@ export default {
     ...mapState(['isConnectDisabled', 'selectedAccount', 'chainId']),
   },
 
+  watch: {
+    async selectedAccount(newAccount, oldAccount) {
+      if (newAccount !== oldAccount) {
+        await this.$store.dispatch('reverseResolveAddress', newAccount)
+      }
+    },
+  },
+
   async mounted() {
     const { ethereum } = window
 
@@ -47,7 +55,6 @@ export default {
 
         if (accounts && accounts.length) {
           this.setSelectedAccount(accounts[0])
-          await this.$store.dispatch('reverseResolveAddress', accounts[0])
         }
       }
 
@@ -74,6 +81,7 @@ export default {
         }
         this.setChainId(null)
         this.setSelectedAccount(null)
+        this.setSelectedAccountEnsName(null)
         this.disableConnectButton(false)
       })
     } else {
@@ -85,6 +93,7 @@ export default {
     ...mapMutations([
       'setChainId',
       'setSelectedAccount',
+      'setSelectedAccountEnsName',
       'disableConnectButton',
     ]),
   },

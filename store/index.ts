@@ -30,7 +30,7 @@ export const mutations: MutationTree<RootState> = {
 
 export const actions: ActionTree<RootState, RootState> = {
   async reverseResolveAddress({ commit }, address) {
-    if (!address) return null
+    if (!address) return commit('setSelectedAccountEnsName', null)
 
     const ens = new ENS({
       provider: await detectEthereumProvider(),
