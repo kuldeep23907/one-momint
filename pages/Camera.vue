@@ -10,26 +10,30 @@
     <canvas v-show="snapCaptured" id="canvas" ref="canvas"></canvas>
     <div class="buttons">
       <b-icon
-        @click.native="snap"
         icon="camera"
         type="is-white"
         size="is-large"
+        @click.native="snap"
       >
       </b-icon>
       <b-icon
-        @click.native="flip"
         icon="camera-flip"
         type="is-white"
         size="is-large"
+        @click.native="flip"
       >
       </b-icon>
     </div>
-    <b-modal :can-cancel="['x']" class="modal" v-model="isModal">
+    <b-modal v-model="isModal" :can-cancel="['x']" class="modal">
       <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
       <h1
-        class="title is-size-1 has-text-centered has-text-weight-bold has-text-white"
+        class="
+          title
+          is-size-1
+          has-text-centered has-text-weight-bold has-text-white
+        "
       >
-        {{ this.modalText }}
+        {{ modalText }}
       </h1>
 
       <lottie-player
@@ -38,17 +42,17 @@
         background="transparent"
         speed="1"
         class="lottie-player"
-        style="width: 300px; height: 300px;"
+        style="width: 300px; height: 300px"
         loop
         autoplay
       ></lottie-player>
       <lottie-player
+        v-show="step == 2"
         src="https://assets3.lottiefiles.com/temp/lf20_iRxzMr.json"
         background="transparent"
         speed="1"
-        v-show="step == 2"
         class="lottie-player"
-        style="width: 300px; height: 300px;"
+        style="width: 300px; height: 300px"
         loop
         autoplay
       ></lottie-player>
@@ -58,7 +62,7 @@
         background="transparent"
         speed="1"
         class="lottie-player"
-        style="width: 300px; height: 300px;"
+        style="width: 300px; height: 300px"
         loop
         autoplay
       ></lottie-player>
@@ -79,6 +83,7 @@ import momintABI from '~/contracts/ABI/ERC721.json'
 import { MOMINT_CONTRACT_ADDRESS } from '~/constants'
 
 export default {
+  layout: 'camera',
   data() {
     return {
       camera: null,
@@ -118,7 +123,6 @@ export default {
       isModal: false,
     }
   },
-  layout: 'camera',
   computed: {
     ...mapState(['selectedAccount']),
   },
@@ -173,7 +177,7 @@ export default {
   methods: {
     getIdentity() {
       try {
-        let storedIdent = localStorage.getItem('identity')
+        const storedIdent = localStorage.getItem('identity')
         if (storedIdent === null) {
           throw new Error('No identity')
         }

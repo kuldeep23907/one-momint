@@ -20,7 +20,7 @@
           <b-button
             :type="selectedAccount ? 'is-secondary' : 'is-primary'"
             @click="$store.dispatch('connectToWallet')"
-            >{{ selectedAccount ? selectedAccount : 'Connect' }}</b-button
+            >{{ cBtnLabel }}</b-button
           >
           <b-button
             v-if="selectedAccount"
@@ -41,7 +41,14 @@ import { mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState(['selectedAccount']),
+    cBtnLabel() {
+      return this.selectedAccount
+        ? this.selectedAccountEnsName
+          ? this.selectedAccountEnsName
+          : this.selectedAccount
+        : 'Connect'
+    },
+    ...mapState(['selectedAccount', 'selectedAccountEnsName']),
   },
 }
 </script>
