@@ -401,7 +401,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 video,
 canvas {
   width: 100%;
