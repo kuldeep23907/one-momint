@@ -36,7 +36,11 @@
       v-model="isModal"
     >
       <h1
-        class="title is-size-1 has-text-centered has-text-weight-bold has-text-white"
+        class="
+          title
+          is-size-1
+          has-text-centered has-text-weight-bold has-text-white
+        "
       >
         {{ modalText }}
       </h1>
@@ -47,7 +51,7 @@
         background="transparent"
         speed="1"
         class="lottie-player"
-        style="width: 300px; height: 300px;"
+        style="width: 300px; height: 300px"
         loop
         autoplay
       ></lottie-player>
@@ -57,7 +61,7 @@
         background="transparent"
         speed="1"
         class="lottie-player"
-        style="width: 300px; height: 300px;"
+        style="width: 300px; height: 300px"
         loop
         autoplay
       ></lottie-player>
@@ -67,7 +71,7 @@
         background="transparent"
         speed="1"
         class="lottie-player"
-        style="width: 300px; height: 300px;"
+        style="width: 300px; height: 300px"
         loop
         autoplay
       ></lottie-player>
@@ -340,8 +344,13 @@ export default {
         description: 'Capture the moment',
         image,
       })
-      console.log(metadata)
+      console.log({ metadata })
       console.log(metadata.data)
+      this.$store.commit('pushToNFTCollection', {
+        name: metadata.data.name,
+        description: metadata.data.description,
+        image: metadata.data.image,
+      })
       // await this.addNewData(metadata)
       // await this.getAllData()
       await this.mint(metadata)
