@@ -3,11 +3,17 @@ import ENS, { getEnsAddress } from '@ensdomains/ensjs'
 import detectEthereumProvider from '@metamask/detect-provider'
 import { SnackbarProgrammatic as Snackbar } from 'buefy'
 
+const stringifyState = (state: any) => {
+  return JSON.stringify({ ...state })
+}
+
 export const state = () => ({
   isConnectDisabled: false,
   selectedAccount: null,
   selectedAccountEnsName: null,
   chainId: null,
+  nftCollection: [],
+  gallery: [],
 })
 
 export const getDefaultState = () => ({
@@ -15,11 +21,19 @@ export const getDefaultState = () => ({
   selectedAccount: null,
   selectedAccountEnsName: null,
   chainId: null,
+  nftCollection: [],
+  gallery: [],
 })
 
 export type RootState = ReturnType<typeof state>
 
 export const mutations: MutationTree<RootState> = {
+  recoverStateFromStorage(state, selectedAccount) {
+    Object.assign(
+      state,
+      JSON.parse(String(localStorage.getItem(selectedAccount)))
+    )
+  },
   resetState(state) {
     Object.assign(state, getDefaultState())
   },
@@ -34,6 +48,22 @@ export const mutations: MutationTree<RootState> = {
   },
   setSelectedAccountEnsName(state, ensName) {
     state.selectedAccountEnsName = ensName
+  },
+  setNFTCollection(state, collection) {
+    state.nftCollection = collection
+  },
+  pushToNFTCollection(
+    state: { selectedAccount: string | null; nftCollection: any[] },
+    nft
+  ) {
+    state.nftCollection = state.nftCollection.concat([nft])
+    console.log('STATE_COLLECTION: ', state.nftCollection)
+    if (state.selectedAccount !== null) {
+      localStorage.setItem(state.selectedAccount, stringifyState(state))
+    }
+  },
+  removeFromNFTCollectionByIndex(state, index) {
+    state.nftCollection.splice(index, 1)
   },
 }
 

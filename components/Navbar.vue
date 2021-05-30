@@ -12,7 +12,14 @@
       </b-navbar-item>
     </template>
     <template #start>
-      <b-navbar-item tag="nuxt-link" to="/">Home</b-navbar-item>
+      <b-navbar-item
+        v-for="({ to, label }, index) in navItems"
+        :key="index"
+        tag="nuxt-link"
+        :to="to"
+      >
+        {{ label }}
+      </b-navbar-item>
     </template>
     <template #end>
       <b-navbar-item tag="div">
@@ -40,6 +47,11 @@
 import { mapState } from 'vuex'
 
 export default {
+  data() {
+    return {
+      navItems: [{ to: '/gallery', label: 'Gallery' }],
+    }
+  },
   computed: {
     cBtnLabel() {
       return this.selectedAccount
