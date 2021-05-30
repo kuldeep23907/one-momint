@@ -47,6 +47,7 @@ export default {
 
         if (accounts && accounts.length) {
           this.setSelectedAccount(accounts[0])
+          await this.$store.dispatch('reverseResolveAddress', accounts[0])
         }
       }
 
