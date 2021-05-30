@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import { isEqual } from 'lodash'
 import { mapState } from 'vuex'
 import { Stack, StackItem } from 'vue-stack-grid'
 
@@ -41,17 +40,17 @@ export default {
     selectedAccount(newAcc, oldAcc) {
       if (newAcc !== oldAcc) {
         this.$store.commit('recoverStateFromStorage', newAcc)
-        console.log('COLLECTION_IMAGES: ', this.nftCollection)
       }
     },
-    nftCollection(newCollection, oldCollection) {
-      if (!isEqual(newCollection, oldCollection)) {
-        this.images = newCollection
-        console.log('IMAGES: ', this.images)
-      }
+    nftCollection(newCollection) {
+      this.images = newCollection
     },
   },
+
   mounted() {
+    if (this.selectedAccount) {
+      this.$store.commit('recoverStateFromStorage', this.selectedAccount)
+    }
     console.log('GRID: ', this.$refs.grid)
 
     setTimeout(() => this.$refs.grid.update(), 500)
