@@ -36,11 +36,7 @@
       v-model="isModal"
     >
       <h1
-        class="
-          title
-          is-size-1
-          has-text-centered has-text-weight-bold has-text-white
-        "
+        class="title is-size-1 has-text-centered has-text-weight-bold has-text-white"
       >
         {{ modalText }}
       </h1>
@@ -51,7 +47,7 @@
         background="transparent"
         speed="1"
         class="lottie-player"
-        style="width: 300px; height: 300px"
+        style="width: 300px; height: 300px;"
         loop
         autoplay
       ></lottie-player>
@@ -61,7 +57,7 @@
         background="transparent"
         speed="1"
         class="lottie-player"
-        style="width: 300px; height: 300px"
+        style="width: 300px; height: 300px;"
         loop
         autoplay
       ></lottie-player>
@@ -71,7 +67,7 @@
         background="transparent"
         speed="1"
         class="lottie-player"
-        style="width: 300px; height: 300px"
+        style="width: 300px; height: 300px;"
         loop
         autoplay
       ></lottie-player>
@@ -407,8 +403,6 @@ canvas {
   -moz-transform: scaleX(-1);
   -o-transform: scaleX(-1);
   transform: scaleX(-1);
-  filter: fliph;
-  -ms-filter: 'fliph';
 }
 
 .buttons {
