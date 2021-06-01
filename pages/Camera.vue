@@ -36,11 +36,7 @@
       v-model="isModal"
     >
       <h1
-        class="
-          title
-          is-size-1
-          has-text-centered has-text-weight-bold has-text-white
-        "
+        class="title is-size-1 has-text-centered has-text-weight-bold has-text-white"
       >
         {{ modalText }}
       </h1>
@@ -51,7 +47,7 @@
         background="transparent"
         speed="1"
         class="lottie-player"
-        style="width: 300px; height: 300px"
+        style="width: 300px; height: 300px;"
         loop
         autoplay
       ></lottie-player>
@@ -61,7 +57,7 @@
         background="transparent"
         speed="1"
         class="lottie-player"
-        style="width: 300px; height: 300px"
+        style="width: 300px; height: 300px;"
         loop
         autoplay
       ></lottie-player>
@@ -71,7 +67,7 @@
         background="transparent"
         speed="1"
         class="lottie-player"
-        style="width: 300px; height: 300px"
+        style="width: 300px; height: 300px;"
         loop
         autoplay
       ></lottie-player>
@@ -357,21 +353,25 @@ export default {
     },
 
     async mint(metadata) {
-      if (!this.selectedAccount) {
-        return alert('You must connect to MetaMask')
-      }
+      // if (!this.selectedAccount) {
+      //   return alert('You must connect to MetaMask')
+      // }
+      console.log(this.momint)
       const mint = await this.momint.methods
         .mint(metadata.url)
-        .send({ from: this.selectedAccount }, async (error, result) => {
-          if (!error) {
-            console.log(result)
-            this.modalText = 'Minting your MoMint...'
-            await this.$nextTick()
-            this.step = 2
-          } else {
-            this.snapCaptured = false
+        .send(
+          { from: await this.$web3.currentProvider.accounts[0] },
+          async (error, result) => {
+            if (!error) {
+              console.log(result)
+              this.modalText = 'Minting your MoMint...'
+              await this.$nextTick()
+              this.step = 2
+            } else {
+              this.snapCaptured = false
+            }
           }
-        })
+        )
         .then(async (result) => {
           console.log(result)
           this.modalText = 'Success!'

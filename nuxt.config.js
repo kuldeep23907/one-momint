@@ -24,6 +24,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    { src: '~/plugins/walletconnect.js', mode: 'client' },
     { src: '~/plugins/web3', mode: 'client' },
     { src: '~/plugins/nft-storage-client', mode: 'client' },
     { src: '~/plugins/nft-storage-file', mode: 'client' },

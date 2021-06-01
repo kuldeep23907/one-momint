@@ -13,13 +13,11 @@ export default {
   },
 
   async mounted() {
-    const { ethereum } = window
+    let ethereum = this.$web3.currentProvider
 
     if (ethereum) {
       if (!this.selectedAccount) {
-        const accounts = await ethereum.request({
-          method: 'eth_accounts',
-        })
+        const accounts = await ethereum.accounts
 
         if (accounts && accounts.length) {
           this.setSelectedAccount(accounts[0])
